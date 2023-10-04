@@ -3,10 +3,9 @@
 <template>
   <main>
     <div>
-      <treeView
-      :node="root"
-      />
-        
+      <h1>View Tree Window</h1>
+      <treeView :node="root" @onClick="nodewasClicked" />
+
 
     </div>
   </main>
@@ -30,10 +29,10 @@ export default {
                 name: "book.pdf"
               },
               {
-                name:"Home",
-                children:[
+                name: "Home",
+                children: [
                   {
-                    name:"music"
+                    name: "music"
                   }
                 ]
               }
@@ -45,6 +44,11 @@ export default {
   },
   components: {
     TreeView
-  }
+  },
+  methods: {
+    nodewasClicked(node) {
+
+    }
+  },
 }
 </script>
