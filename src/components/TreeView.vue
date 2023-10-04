@@ -1,13 +1,19 @@
 <template>
     <div>
-        <div @click="changeToggle()" :style="{ 'margin-left': `${branch * 45}px` }" class="node">
+        <div @click="changeToggle()" :style="{ 'margin-left': `${branch * 45}px` }" class="folder">
             <h3>
-                <Icon icon="ep:arrow-up-bold" :rotate="rotate" :horizontalFlip="true" v-if="havechildern" /> {{ node.name }}
+                <Icon icon="ep:arrow-up-bold" :rotate="rotate" :horizontalFlip="true" v-if="havechildern" /> {{ folder.name }}
+                <div class="icons">
+            <span @click="deleteFolder"> <Icon icon="mdi:delete" />delete</span>
+            <router-link :to="{ name: 'EditFolder', params: { FolderId: folder.id } }">
+                <span ><Icon icon="line-md:edit" />edit</span>
+            </router-link>
+        </div>
             </h3>
 
         </div>
-        <TreeView v-if="toggel" v-for="child in node.children" :key="child.name" :node="child" :branch="branch + 1"
-            @onClick="(node) => $emit('onClick', node)" />
+        <TreeView v-if="toggel" v-for="child in folder.children" :key="child.name" :folder="child" :branch="branch + 1"
+            @onClick="(folder) => $emit('onClick', folder)" />
     </div>
 </template>
 
@@ -20,7 +26,9 @@ export default {
     },
     name: "TreeView",
     props: {
-        node: Object,
+        folder:{
+            type: Object,
+        },
         branch: {
             type: Number,
             default: 0,
@@ -29,7 +37,9 @@ export default {
     data() {
         return {
             toggel: false,
-            rotate: 1
+            rotate: 1,
+            uri: "http://localhost:3000/folders/" + this.folder.id,
+
         }
 
     },
@@ -38,14 +48,21 @@ export default {
             this.toggel = !this.toggel
             this.rotate = this.rotate == 1 ? 2 : 1
             if (!this.havechildern) {
-                this.$emit('onclick', this.node);
+                this.$emit('onclick', this.folder);
 
             }
-        }
+        },
+        deleteFolder() {
+            fetch(this.uri, {
+                    method: "DELETE",
+                })
+                .then(() => this.$emit("delete", this.folder.id))
+                .catch((err) => console.log(err));
+        },
     },
     computed: {
         havechildern() {
-            return this.node.children;
+            return this.folder.children;
         }
     }
 }
@@ -53,7 +70,7 @@ export default {
 </script>
 
 <style  scoped>
-.node {
+.folder {
     text-align: left;
     font-size: 18px;
 }

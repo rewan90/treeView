@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "id": 1,
+      "name": "docs",
+      "children": [
+        {
+          "id": 3,
+          "name": "test"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "dos"
+    },
+    {
+      "name": "jhbm,hnjm",
+      "id": 1110
+    }
+  ]
+}
