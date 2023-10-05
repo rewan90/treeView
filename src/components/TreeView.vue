@@ -4,7 +4,7 @@
             <h3>
                 <Icon icon="ep:arrow-up-bold" :rotate="rotate" :horizontalFlip="true" v-if="havechildern" /> {{ folder.name }}
                 <div class="icons">
-            <span @click="deleteFolder"> <Icon icon="mdi:delete" />delete</span>
+            <span @click="deleteFolder(folder.id)"> <Icon icon="mdi:delete" />delete</span>
             <router-link :to="{ name: 'EditFolder', params: { FolderId: folder.id } }">
                 <span ><Icon icon="line-md:edit" />edit</span>
             </router-link>
@@ -55,11 +55,11 @@ export default {
 
             }
         },
-        deleteFolder() {
-            fetch(this.uri, {
+        async deleteFolder(id) {
+            await fetch("http://localhost:3000/folders/" + id, {
                     method: "DELETE",
                 })
-                .then(() => this.$emit("delete", this.folder.id))
+                .then(location.reload())
                 .catch((err) => console.log(err));
         },
     },

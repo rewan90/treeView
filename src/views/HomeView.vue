@@ -4,11 +4,13 @@
   <main>
     <div class="card text-center">
       <h1 class="card-header">View Tree Window
-        <router-link :to="{ name: 'AddFolder'  ,params: { FolderId:0}  }">
-                <span ><Icon icon="fluent:folder-add-24-filled" /> Add</span>
-            </router-link>
+        <router-link :to="{ name: 'AddFolder', params: { FolderId: 0 } }">
+          <span>
+            <Icon icon="fluent:folder-add-24-filled" /> Add
+          </span>
+        </router-link>
       </h1>
-      <treeView  v-for="folder in folders"  :folder="folder" @delete="handleDelete(folder.id)"/>
+      <treeView v-for="folder in folders" :folder="folder" />
 
 
     </div>
@@ -25,53 +27,71 @@ export default {
   name: "home",
   data() {
     return {
-      folders:[]
+      folders: [],
+      foldersArrsy: []
     }
   },
   components: {
     TreeView,
-        Icon,
-    
+    Icon,
+
   },
-  async mounted() {
-    await fetch('http://localhost:3000/folders')
-      .then(res => res.json())
-      .then( data => this.folders = data )
-      .catch(err => console.log(err))
-    let foldersArrsy = []
-    this.folders.forEach(myFunction.bind(this));
-    function myFunction(folder) {
-      
-      // console.log("folder" , folder.parent_id == null);
-      if (folder.parent_id == null) {
-        foldersArrsy.push(folder)
-      } else {
-        let parent;
-        parent = this.folders.filter(item => {
-          return folder.parent_id == item.id
-        })
-        parent = parent[0]
-        // console.log(parent.id);
-        foldersArrsy.map(function (value) {
-          // console.log(value.id == parent.id, value.id , parent.id);
-          if (value.id == parent.id) {
-            value.folders = [folder];
-            return value;
-          }
-        }.bind(parent));
-      }
-    }
-    this.folders = foldersArrsy;
-    console.log(this.folders);
-    
+  mounted() {
+    this.getData();
   },
   methods: {
-    
-
-    handleDelete(id) {
-      this.folders = this.folders.filter(folder => {
-        return folder.id !== id
-      })
+    async getData() {
+      // fetch json data
+      await fetch('http://localhost:3000/folders')
+        .then(res => res.json())
+        .then(data => this.folders = data)
+        .catch(err => console.log(err))
+        // loop in data to make a tree
+      this.folders.forEach(myFunction.bind(this));
+      function myFunction(folder) {
+        // if the folder is main folder 
+        if (folder.parent_id == null) {
+          this.foldersArrsy.push(folder)
+        } else {
+          // get the folder parent 
+          let parent;
+          parent = this.folders.filter(item => {
+            return folder.parent_id == item.id
+          })
+          parent = parent[0]
+          // if folder has  vaild parent 
+          if (parent) {
+            // loop in all parent and push childern to the parent 
+            this.loopInarray(parent, this.foldersArrsy, folder);
+          }
+        }
+      }
+      this.folders = this.foldersArrsy;
     },
-}  }
+    loopInarray(parent, foldersArrsy, folder) {
+      // rename this to bind with new name vm
+      let vm = this
+      // loop in the latest folder array,
+      foldersArrsy.map(function (value) {
+        // if the parent == this folder parent_id
+        // push the folder in to the parent with attr folders
+        if (value.id == parent.id) {
+          if (value.folders) {
+            value.folders.push(folder)
+          }else{
+            value.folders = [folder];
+          }
+          
+          return value;
+        }
+        // else looop in the folder folders 
+        // search in childern and grand childern ...etc
+        if (value.folders) {
+          vm.loopInarray(parent, value.folders, folder)
+        }
+      }.bind([parent, folder, vm]));
+      this.foldersArrsy = foldersArrsy;
+    },
+  }
+}
 </script>
