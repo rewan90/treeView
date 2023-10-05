@@ -41,11 +41,13 @@ export default {
     };
   },
 
+
   methods: {
     handleSubmit() {
       let project = {
         name: this.name,
-        id: Math.floor(Math.random() * 10000),
+        parent_id: this.$route.params.FolderId == 0 ? null : this.$route.params.FolderId ,
+        id: Math.floor(Math.random() * 1000000000000000),
       };
 
       fetch("http://localhost:3000/folders", {

@@ -8,11 +8,14 @@
             <router-link :to="{ name: 'EditFolder', params: { FolderId: folder.id } }">
                 <span ><Icon icon="line-md:edit" />edit</span>
             </router-link>
+            <router-link :to="{ name: 'AddFolder' , params: { FolderId: folder.id } }">
+                <span ><Icon icon="fluent:folder-add-24-filled" /> Add</span>
+            </router-link>
         </div>
             </h3>
 
         </div>
-        <TreeView v-if="toggel" v-for="child in folder.children" :key="child.name" :folder="child" :branch="branch + 1"
+        <TreeView v-if="toggel" v-for="child in folder.folders" :key="child.id" :folder="child" :branch="branch + 1"
             @onClick="(folder) => $emit('onClick', folder)" />
     </div>
 </template>
@@ -62,7 +65,7 @@ export default {
     },
     computed: {
         havechildern() {
-            return this.folder.children;
+            return this.folder.folders ? true : false;
         }
     }
 }

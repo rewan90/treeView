@@ -12,7 +12,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/AddFolder',
+      path: '/AddFolder/:FolderId',
       name: 'AddFolder',
       component: AddFolder
     },

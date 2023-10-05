@@ -45,24 +45,23 @@ export default {
   name: "editFolder",
   components: { spinner },
 
-  props: ["id"],
   data() {
     return {
-      uri: "http://localhost:3000/folders/" + this.id,
-      name: "",
+      uri: "http://localhost:3000/folders/" + this.$route.params.FolderId ,
+      folder:{}
     };
   },
 
   created: async function () {
-    try {
       this.loading = true;
-      let response = await UsersService.getFolder(this.folderId);
-      this.folder = response.data;
+      fetch('http://localhost:3000/folders/'+ this.$route.params.FolderId )
+      .then(res => res.json())
+      .then(data => this.folder = data )
+      .catch(err => console.log(err))
+      console.log(this.folder);
+     
       this.loading = false;
-    } catch (error) {
-      this.errorMessage = error;
-      this.loading = false;
-    }
+    
   },
 
   methods: {
@@ -70,7 +69,7 @@ export default {
       fetch(this.uri, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: this.name }),
+        body: JSON.stringify({ name: this.folder.name, parent_id: this.folder.parent_id }),
       })
         .then(() => {
           this.$router.push("/");
