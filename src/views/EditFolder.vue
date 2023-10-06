@@ -20,17 +20,12 @@
       <div class="col-md-4">
         <form @submit.prevent="handleSubmit">
           <div class="mb-2">
-            <input
-              type="text"
-              placeholder="Name"
-              class="form-control"
-              v-model="folder.name"
-              required
-            />
+            <input type="text" placeholder="Name" class="form-control" v-model="folder.name" required />
           </div>
 
           <div class="mb-2">
             <input type="submit" class="btn btn-primary" value="Update" />
+        
           </div>
         </Form>
       </div>
@@ -47,21 +42,21 @@ export default {
 
   data() {
     return {
-      uri: "http://localhost:3000/folders/" + this.$route.params.FolderId ,
-      folder:{}
+      uri: "http://localhost:3000/folders/" + this.$route.params.FolderId,
+      folder: {}
     };
   },
 
   created: async function () {
-      this.loading = true;
-      fetch('http://localhost:3000/folders/'+ this.$route.params.FolderId )
+    this.loading = true;
+    fetch('http://localhost:3000/folders/' + this.$route.params.FolderId)
       .then(res => res.json())
-      .then(data => this.folder = data )
+      .then(data => this.folder = data)
       .catch(err => console.log(err))
-      console.log(this.folder);
-     
-      this.loading = false;
-    
+    console.log(this.folder);
+
+    this.loading = false;
+
   },
 
   methods: {
